@@ -1,22 +1,30 @@
-## Estadísticas
+## Estadisticas
 
 ---
 
-### Resumen del Código Fuente
+### Resumen del Codigo Fuente
 
-| Métrica | Valor |
+| Metrica | Valor |
 |---------|-------|
 | **Archivos Totales** | {{statistics.totalFiles}} |
 | **Carpetas Totales** | {{statistics.totalFolders}} |
 
 ---
 
-### Líneas por Lenguaje
+### Lineas por Lenguaje
 
-| Lenguaje | Líneas | Proporción |
-|----------|--------|------------|
+| Lenguaje | Lineas Estimadas |
+|----------|-----------------|
 {{#each statistics.linesByLanguage}}
-| {{this.name}} | {{this.lines}} | - |
+| {{this.name}} | {{this.lines}} |
 {{/each}}
 
-> Estadísticas generadas a partir del análisis del código fuente.
+---
+
+### Modulos Detectados
+
+| Modulo | Ruta | Archivos |
+|--------|------|----------|
+{{#each modules}}
+| **{{this.name}}** | `{{this.path}}` | {{this.files}} |
+{{/each}}

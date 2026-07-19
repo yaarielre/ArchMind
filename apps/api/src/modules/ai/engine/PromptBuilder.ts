@@ -1,109 +1,104 @@
 import type { KnowledgeModel } from "../../knowledge/domain/entities/KnowledgeModel.js";
-import type { DocumentSection } from "../../documentation/domain/entities/DocumentationResult.js";
 
-const SECTION_PROMPTS: Record<string, string> = {
-  "executive-summary": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe un Resumen Ejecutivo claro y profesional.
-Incluye: qué hace el proyecto, su propósito principal, audiencia objetivo y características principales.
-Sé conciso pero informativo. Usa formato Markdown.
+const SECTION_ANALYSIS_PROMPTS: Record<string, string> = {
+  "executive-summary": `Eres un arquitecto de software senior. Analiza el siguiente proyecto y escribe un Resumen Ejecutivo completo.
+
+PRIMERO: Explica que es el proyecto, para que sirve, cual es su objetivo principal y a que dominio pertenece (salud, finanzas, educacion, e-commerce, etc). Infer esto de la estructura de carpetas, los nombres de modulos, las dependencias y el README si existe.
+
+SEGUNDO: Describe la audiencia objetivo, las caracteristicas principales del sistema y el estado actual (version, madurez).
+
+NO generes tablas ni listas de datos. Solo escribe parrafos analiticos claros y profesionales.
 Responde en español.`,
 
-  "architecture": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe una sección de Arquitectura detallada.
-Explica el patrón elegido, por qué se seleccionó, cómo interactúan los módulos y la estructura por capas.
-Usa formato Markdown con encabezados claros.
+  "architecture": `Eres un arquitecto de software senior. Analiza la arquitectura del proyecto y escribe un analisis cualitativo.
+Explica por que se selecciono este patron, como interactuan los modulos, ventajas y areas de mejora.
+NO generes tablas, listas de capas ni estructura de arbol. Solo escribe parrafos analiticos.
 Responde en español.`,
 
-  "stack": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe una sección de Stack Tecnológico detallada.
-Explica cada elección de tecnología y por qué encaja en el proyecto. Incluye lenguajes, frameworks, bases de datos, herramientas.
-Usa formato Markdown con tablas donde sea apropiado.
+  "stack": `Eres un arquitecto de software senior. Analiza el stack tecnologico del proyecto.
+Explica cada eleccion de tecnologia, por que encaja, ventajas y posibles alternativas.
+NO generes tablas. Solo escribe parrafos analiticos.
 Responde en español.`,
 
-  "dependencies": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe una sección de Dependencias detallada.
-Agrupa por categoría (UI, base de datos, auth, testing, etc.) y explica el propósito de las dependencias clave.
-Usa formato Markdown con tablas.
+  "dependencies": `Eres un arquitecto de software senior. Analiza las dependencias del proyecto.
+Identifica las dependencias criticas, agrupa por categoria y explica su impacto en el proyecto.
+NO generes tablas. Solo escribe parrafos analiticos.
 Responde en español.`,
 
-  "modules": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe una sección de Módulos detallada.
-Explica la responsabilidad de cada módulo, cómo se relacionan y la organización general del código.
-Usa formato Markdown.
+  "modules": `Eres un arquitecto de software senior. Analiza los modulos del proyecto.
+Explica la responsabilidad de cada modulo, como se relacionan entre si y la calidad de la separacion.
+NO generes tablas. Solo escribe parrafos analiticos.
 Responde en español.`,
 
-  "statistics": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe una sección de Estadísticas.
-Analiza las métricas del código fuente y proporciona insights sobre el tamaño y complejidad del proyecto.
-Usa formato Markdown.
+  "statistics": `Eres un arquitecto de software senior. Analiza las metricas del proyecto.
+Interpreta el tamano, complejidad, distribucion de lenguajes y lo que esto implica para mantenibilidad.
+NO generes tablas ni numeros exactos. Solo escribe parrafos analiticos con insights.
 Responde en español.`,
 
-  "recommendations": `Eres un arquitecto de software senior escribiendo documentación.
-Basado en los datos del proyecto, escribe Recomendaciones accionables.
-Sugiere mejoras para arquitectura, testing, seguridad, performance y mantenibilidad.
-Sé específico y práctico. Usa formato Markdown.
+  "recommendations": `Eres un arquitecto de software senior. Analiza el proyecto y escribe recomendaciones accionables.
+Enfocate en arquitectura, testing, seguridad, performance y mantenibilidad. Sé especifico y practico.
+NO generes tablas. Solo escribe parrafos con recomendaciones concretas.
 Responde en español.`,
 };
 
 export class PromptBuilder {
-  buildSystemPrompt(knowledge: KnowledgeModel): string {
-    return `Eres un experto en documentación técnica de software.
-Escribes documentación clara, profesional y accionable.
-Siempre usas formato Markdown.
-Nunca inventas información - solo usas los datos proporcionados.
-Sé conciso pero exhaustivo.
-IMPORTANTE: Responde SIEMPRE en español.`;
+  buildSystemPrompt(): string {
+    return `Eres un experto en documentacion tecnica de software.
+Escribes analisis claros, profesionales y accionables.
+Nunca inventas informacion - solo usas los datos proporcionados.
+IMPORTANTE: Responde SIEMPRE en español.
+IMPORTANTE: NO generes tablas Markdown ni estructuras de datos.
+IMPORTANTE: NO generes listas con viñetas de datos tecnicos.
+Solo genera parrafos de analisis cualitativo: explicaciones, insights, recomendaciones y conclusiones.`;
   }
 
-  buildSectionPrompt(section: DocumentSection, knowledge: KnowledgeModel): string {
-    const sectionPrompt = SECTION_PROMPTS[section.id] ?? `Write a detailed ${section.title} section for this project.`;
+  buildCondensedKnowledge(knowledge: KnowledgeModel): string {
+    const deps = knowledge.dependencies.production.slice(0, 15).map((d) => `${d.name} (${d.purpose})`).join(", ");
+    const mods = knowledge.modules.map((m) => `${m.name}: ${m.files} archivos, capas [${m.layers.join(", ")}]`).join("; ");
 
-    return `${sectionPrompt}
+    return `Proyecto: ${knowledge.project.name}
+Descripcion: ${knowledge.project.description || "N/A"}
+Version: ${knowledge.project.version}
+Runtime: ${knowledge.stack.runtime || "N/A"}
+Framework: ${knowledge.stack.framework || "N/A"}
+Lenguajes: ${knowledge.stack.languages.join(", ")}
+Base de datos: ${knowledge.stack.database || "N/A"}
+ORM: ${knowledge.stack.orm || "N/A"}
+Testing: ${knowledge.stack.testing || "N/A"}
+Bundler: ${knowledge.stack.bundler || "N/A"}
+Gestor de paquetes: ${knowledge.stack.packageManager || "N/A"}
+Arquitectura: ${knowledge.architecture.pattern} (${Math.round(knowledge.architecture.confidence * 100)}% confianza)
+Capas: ${knowledge.architecture.layers.join(", ")}
+Archivos: ${knowledge.statistics.totalFiles}
+Carpetas: ${knowledge.statistics.totalFolders}
+Lineas por lenguaje: ${Object.entries(knowledge.statistics.linesByLanguage).map(([l, n]) => `${l}: ${n}`).join(", ")}
+Dependencias principales: ${deps}
+Modulos: ${mods}`;
+  }
 
-## Project Data
+  buildSectionAnalysis(sectionId: string, knowledge: KnowledgeModel): string {
+    const prompt = SECTION_ANALYSIS_PROMPTS[sectionId] ?? `Analiza la seccion "${sectionId}" del proyecto y escribe un analisis cualitativo.`;
+    return `${prompt}\n\n## Datos del Proyecto\n\n${this.buildCondensedKnowledge(knowledge)}`;
+  }
 
-### Project Info
-- Name: ${knowledge.project.name}
-- Description: ${knowledge.project.description || "N/A"}
-- Version: ${knowledge.project.version}
-- Entry Point: ${knowledge.project.entryPoint}
+  buildBatchAnalysis(sectionIds: string[], knowledge: KnowledgeModel): string {
+    const sectionNames = sectionIds.map((id) => SECTION_ANALYSIS_PROMPTS[id] ? `- ${id}` : `- ${id}`).join("\n");
+    return `Eres un experto en documentacion tecnica. Analiza las siguientes secciones del proyecto.
 
-### Stack
-- Languages: ${knowledge.stack.languages.join(", ")}
-- Framework: ${knowledge.stack.framework || "N/A"}
-- Runtime: ${knowledge.stack.runtime || "N/A"}
-- Database: ${knowledge.stack.database || "N/A"}
-- ORM: ${knowledge.stack.orm || "N/A"}
-- Testing: ${knowledge.stack.testing || "N/A"}
-- Package Manager: ${knowledge.stack.packageManager || "N/A"}
+## Secciones a Analizar
 
-### Architecture
-- Pattern: ${knowledge.architecture.pattern}
-- Confidence: ${knowledge.architecture.confidence}
-- Modules: ${knowledge.architecture.modules.join(", ")}
-- Layers: ${knowledge.architecture.layers.join(", ")}
+${sectionNames}
 
-### Dependencies (Production)
-${knowledge.dependencies.production.map((d) => `- ${d.name} ${d.version} (${d.purpose})`).join("\n") || "None"}
+## Datos del Proyecto
 
-### Dependencies (Development)
-${knowledge.dependencies.development.map((d) => `- ${d.name} ${d.version} (${d.purpose})`).join("\n") || "None"}
-
-### Modules
-${knowledge.modules.map((m) => `- ${m.name}: ${m.files} files at ${m.path}`).join("\n") || "None"}
-
-### Statistics
-- Total Files: ${knowledge.statistics.totalFiles}
-- Total Folders: ${knowledge.statistics.totalFolders}
-- Lines by Language: ${Object.entries(knowledge.statistics.linesByLanguage).map(([l, n]) => `${l}: ${n}`).join(", ")}
-
-## Current Section Content
-
-${section.content}
+${this.buildCondensedKnowledge(knowledge)}
 
 ---
 
-Rewrite this section using the project data above. Make it professional, detailed, and accurate.
-Output ONLY the Markdown for this section. No extra commentary.`;
+Para cada seccion, escribe un analisis cualitativo en parrafos.
+NO generes tablas ni listas de datos.
+Responde en español.
+Para cada seccion, usa el formato: ## Titulo de Seccion
+y escribe tu analisis debajo en parrafos.`;
   }
 }

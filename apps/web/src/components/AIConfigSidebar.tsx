@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, Eye, EyeOff, RotateCcw, ChevronDown, Sparkles } from "lucide-react";
+import { Eye, EyeOff, RotateCcw, ChevronDown, Sparkles } from "lucide-react";
 import { loadAIConfig, saveAIConfig, resetAIConfig, NVIDIA_MODEL_PRESETS } from "../config/ai";
 import type { AIConfig } from "../types";
 
@@ -54,14 +54,14 @@ export function AIConfigSidebar({ onConfigChange }: AIConfigSidebarProps) {
           />
 
           <div>
-            <label className="block text-[10px] font-semibold text-white/40 mb-1.5 uppercase tracking-wider">
+            <label className="block text-[10px] font-semibold text-white/50 mb-1.5 uppercase tracking-wider">
               Modelo
             </label>
             <div className="relative">
               <select
                 value={config.model}
                 onChange={(e) => update("model", e.target.value)}
-                className="w-full appearance-none px-3 py-2 bg-white/[0.06] border border-white/10 rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/40 transition-all cursor-pointer hover:bg-white/[0.08]"
+                className="w-full appearance-none px-3 py-2 bg-slate-900/60 border border-white/10 rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/40 transition-all cursor-pointer hover:bg-slate-900/80"
               >
                 {NVIDIA_MODEL_PRESETS.map((model) => (
                   <option key={model.id} value={model.id} className="bg-slate-900 text-white">
@@ -71,7 +71,7 @@ export function AIConfigSidebar({ onConfigChange }: AIConfigSidebarProps) {
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
             </div>
-            <p className="mt-1.5 text-[10px] leading-relaxed text-white/30">
+            <p className="mt-1.5 text-[10px] leading-relaxed text-white/35">
               {NVIDIA_MODEL_PRESETS.find((m) => m.id === config.model)?.description ?? "Selecciona uno de los modelos NVIDIA disponibles."}
             </p>
           </div>
@@ -130,7 +130,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-[10px] font-semibold text-white/40 mb-1.5 uppercase tracking-wider">
+      <label className="block text-[10px] font-semibold text-white/50 mb-1.5 uppercase tracking-wider">
         {label}
       </label>
       <input
@@ -138,7 +138,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded-lg text-xs text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/40 transition-all hover:bg-white/[0.08]"
+        className="w-full px-3 py-2 bg-slate-900/60 border border-white/10 rounded-lg text-xs text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/40 transition-all hover:bg-slate-900/80"
       />
     </div>
   );

@@ -1,8 +1,8 @@
-## Stack Tecnológico
+## Stack Tecnologico
 
 ---
 
-| Categoría | Tecnología |
+| Categoria | Tecnologia |
 |-----------|------------|
 | **Lenguajes** | {{stack.languages}} |
 | **Framework** | {{stack.framework}} |
@@ -13,4 +13,14 @@
 | **Bundler** | {{stack.bundler}} |
 | **Gestor de Paquetes** | {{stack.packageManager}} |
 
-> Todas las tecnologías fueron detectadas automáticamente a partir del análisis del código fuente del proyecto.
+---
+
+### Resumen del Proyecto
+
+| Campo | Valor |
+|-------|-------|
+| **Nombre** | {{project.name}} |
+| **Version** | {{project.version}} |
+| **Punto de Entrada** | {{project.entryPoint}} |
+| **Runtime** | {{stack.runtime}} |
+| **Framework** | {{stack.framework}} |

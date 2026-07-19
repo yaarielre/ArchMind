@@ -24,7 +24,7 @@ export function DocsTab({
 }) {
   return (
     <div className="space-y-6">
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 p-5">
+      <div className="bg-slate-900/85 backdrop-blur-2xl rounded-2xl border border-white/10 p-6 shadow-2xl shadow-black/40">
         <SectionSelector
           selected={sections}
           onChange={onSectionsChange}
@@ -61,7 +61,7 @@ export function DocsTab({
       </div>
 
       {docs && !loading && (
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+        <div className="bg-slate-900/85 backdrop-blur-2xl rounded-2xl border border-white/10 p-6 shadow-2xl shadow-black/40">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-white">Documentacion Generada</h3>
             <span className="text-xs text-white/50">

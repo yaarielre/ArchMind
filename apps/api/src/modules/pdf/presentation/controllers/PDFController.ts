@@ -6,6 +6,8 @@ import { ProjectDocumentationGenerator } from "../../../documentation/infrastruc
 import { PDFGenerator } from "../../engine/PDFGenerator.js";
 import { AppError } from "../../../../shared/AppError.js";
 import type { PDFConfig } from "../../domain/entities/PDFResult.js";
+import type { KnowledgeModel } from "../../../knowledge/domain/entities/KnowledgeModel.js";
+import type { DocumentationResult } from "../../../documentation/domain/entities/DocumentationResult.js";
 
 const repository = new MongoProjectRepository();
 const knowledgeBuilder = new ProjectKnowledgeBuilder();
@@ -25,13 +27,26 @@ export class PDFController {
       throw new AppError("Project has no source files", 400, "NO_SOURCE");
     }
 
-    const knowledge = await knowledgeBuilder.build(project.sourcePath, project.analysis ?? {});
-    const documentation = await docGenerator.generate(knowledge);
-
     const config: PDFConfig = {
       format: req.body?.format ?? "A4",
       landscape: req.body?.landscape ?? false,
     };
+
+    let knowledge: KnowledgeModel;
+    if (project.knowledgeModel) {
+      knowledge = project.knowledgeModel as unknown as KnowledgeModel;
+    } else {
+      knowledge = await knowledgeBuilder.build(project.sourcePath, project.analysis ?? {});
+      project.knowledgeModel = knowledge as unknown as Record<string, unknown>;
+    }
+
+    let documentation: DocumentationResult;
+    if (project.documentationResult) {
+      documentation = project.documentationResult as unknown as DocumentationResult;
+    } else {
+      documentation = await docGenerator.generate(knowledge);
+      project.documentationResult = documentation as unknown as Record<string, unknown>;
+    }
 
     const pdf = await pdfGenerator.generate(documentation.markdown, knowledge.project.name, config);
 

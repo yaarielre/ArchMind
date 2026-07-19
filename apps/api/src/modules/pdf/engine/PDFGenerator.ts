@@ -1,25 +1,22 @@
-import puppeteer from "puppeteer";
-
 import type { IPDFGenerator } from "../domain/interfaces/IPDFGenerator.js";
 import type { PDFResult, PDFConfig } from "../domain/entities/PDFResult.js";
 import { MarkdownToHTML } from "./MarkdownToHTML.js";
 import { buildHTMLDocument } from "./HTMLTemplate.js";
+import { BrowserPool } from "./BrowserPool.js";
 
 export class PDFGenerator implements IPDFGenerator {
   private readonly mdToHtml = new MarkdownToHTML();
+  private readonly pool = BrowserPool.getInstance();
 
   async generate(markdown: string, projectName: string, config?: PDFConfig): Promise<PDFResult> {
     const metadata = this.extractMetadata(markdown);
     const bodyHTML = this.mdToHtml.convert(markdown);
     const fullHTML = buildHTMLDocument(projectName, bodyHTML, metadata);
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    const browser = await this.pool.getBrowser();
+    const page = await browser.newPage();
 
     try {
-      const page = await browser.newPage();
       await page.setContent(fullHTML, { waitUntil: "load" });
 
       const pdfBuffer = await page.pdf({
@@ -44,7 +41,7 @@ export class PDFGenerator implements IPDFGenerator {
         generatedAt: new Date(),
       };
     } finally {
-      await browser.close();
+      await page.close();
     }
   }
 

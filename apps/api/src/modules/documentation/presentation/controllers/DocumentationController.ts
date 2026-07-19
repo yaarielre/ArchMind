@@ -5,6 +5,7 @@ import { ProjectKnowledgeBuilder } from "../../../knowledge/infrastructure/imple
 import { ProjectDocumentationGenerator } from "../../infrastructure/implementations/ProjectDocumentationGenerator.js";
 import { AppError } from "../../../../shared/AppError.js";
 import type { SectionType } from "../../domain/entities/DocumentationResult.js";
+import type { KnowledgeModel } from "../../../knowledge/domain/entities/KnowledgeModel.js";
 
 const repository = new MongoProjectRepository();
 const knowledgeBuilder = new ProjectKnowledgeBuilder();
@@ -23,9 +24,31 @@ export class DocumentationController {
       throw new AppError("Project has no source files", 400, "NO_SOURCE");
     }
 
-    const knowledge = await knowledgeBuilder.build(project.sourcePath, project.analysis ?? {});
     const sections = req.body?.sections as SectionType[] | undefined;
+
+    if (project.documentationResult && !sections) {
+      res.status(200).json({
+        success: true,
+        message: "Documentation generated successfully",
+        data: project.documentationResult,
+      });
+      return;
+    }
+
+    let knowledge: KnowledgeModel;
+    if (project.knowledgeModel) {
+      knowledge = project.knowledgeModel as unknown as KnowledgeModel;
+    } else {
+      knowledge = await knowledgeBuilder.build(project.sourcePath, project.analysis ?? {});
+      project.knowledgeModel = knowledge as unknown as Record<string, unknown>;
+    }
+
     const documentation = await docGenerator.generate(knowledge, sections);
+
+    if (!sections) {
+      project.documentationResult = documentation as unknown as Record<string, unknown>;
+    }
+    await repository.update(project);
 
     res.status(200).json({
       success: true,
@@ -46,8 +69,25 @@ export class DocumentationController {
       throw new AppError("Project has no source files", 400, "NO_SOURCE");
     }
 
-    const knowledge = await knowledgeBuilder.build(project.sourcePath, project.analysis ?? {});
+    if (project.documentationResult) {
+      res.status(200).json({
+        success: true,
+        data: project.documentationResult,
+      });
+      return;
+    }
+
+    let knowledge: KnowledgeModel;
+    if (project.knowledgeModel) {
+      knowledge = project.knowledgeModel as unknown as KnowledgeModel;
+    } else {
+      knowledge = await knowledgeBuilder.build(project.sourcePath, project.analysis ?? {});
+      project.knowledgeModel = knowledge as unknown as Record<string, unknown>;
+    }
+
     const documentation = await docGenerator.generate(knowledge);
+    project.documentationResult = documentation as unknown as Record<string, unknown>;
+    await repository.update(project);
 
     res.status(200).json({
       success: true,

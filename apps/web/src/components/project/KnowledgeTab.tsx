@@ -16,8 +16,8 @@ export function KnowledgeTab({
   if (!knowledge) {
     return (
       <div className="text-center py-12">
-        <Brain className="w-12 h-12 text-white/30 mx-auto mb-4" />
-        <p className="text-white/50 mb-4">
+        <Brain className="w-12 h-12 text-white/50 mx-auto mb-4" />
+        <p className="text-white/70 mb-4">
           El Knowledge Model aun no ha sido generado
         </p>
         <button
@@ -78,13 +78,13 @@ export function KnowledgeTab({
           {knowledge.modules.map((m) => (
             <div
               key={m.name}
-              className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+              className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/10"
             >
               <div>
                 <p className="text-sm font-medium text-white">{m.name}</p>
-                <p className="text-xs text-white/40 font-mono">{m.path}</p>
+                <p className="text-xs text-white/50 font-mono">{m.path}</p>
               </div>
-              <span className="text-xs text-white/50 bg-white/10 px-2 py-1 rounded">
+              <span className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded">
                 {m.files} archivos
               </span>
             </div>

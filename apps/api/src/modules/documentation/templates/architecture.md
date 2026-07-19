@@ -2,10 +2,12 @@
 
 ---
 
-### Patrón de Diseño
+### Patron de Diseno
 
-- **Patrón detectado:** {{architecture.pattern}}
-- **Nivel de confianza:** {{architecture.confidence}}
+| Campo | Valor |
+|-------|-------|
+| **Patron detectado** | {{architecture.pattern}} |
+| **Nivel de confianza** | {{architecture.confidence}} |
 
 ---
 
@@ -17,10 +19,46 @@
 
 ---
 
-### Módulos Principales
+### Estructura del Proyecto
 
-{{#each architecture.modules}}
-- **{{this}}**
+```
+{{project.name}}/
+├── src/
+{{#each modules}}
+│   ├── {{this.name}}/
+{{#if this.layers}}
+{{#each this.layers}}
+│   │   ├── {{this}}/
+{{/each}}
+{{/if}}
+│   │   └── ... ({{this.files}} archivos)
+{{/each}}
+├── {{structure.entry}}
+{{#if structure.srcDir}}
+├── {{structure.srcDir}}/
+{{/if}}
+{{#each structure.configFiles}}
+├── {{this}}
+{{/each}}
+└── ...
+```
+
+---
+
+### Modulos Principales
+
+| Modulo | Ruta | Archivos | Capas |
+|--------|------|----------|-------|
+{{#each modules}}
+| **{{this.name}}** | `{{this.path}}` | {{this.files}} | {{this.layers}} |
 {{/each}}
 
-> La arquitectura fue inferida automáticamente a partir de la estructura de directorios y las dependencias del proyecto.
+---
+
+### Flujo de Dependencias
+
+```
+{{#each architecture.layers}}
+{{this}}{{#unless @last}} → {{/unless}}
+{{/each}}
+```

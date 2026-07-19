@@ -14,10 +14,10 @@ const TEMPLATES_DIR = join(__dirname, "..", "templates");
 const SECTION_TITLES: Record<SectionType, string> = {
   "executive-summary": "Resumen Ejecutivo",
   "architecture": "Arquitectura",
-  "stack": "Stack Tecnológico",
+  "stack": "Stack Tecnologico",
   "dependencies": "Dependencias",
-  "modules": "Módulos",
-  "statistics": "Estadísticas",
+  "modules": "Modulos",
+  "statistics": "Estadisticas",
   "recommendations": "Recomendaciones",
 };
 
@@ -30,6 +30,8 @@ const SECTION_FILES: Record<SectionType, string> = {
   "statistics": "statistics.md",
   "recommendations": "recommendations.md",
 };
+
+const templateCache = new Map<string, string>();
 
 export class DocumentationBuilder {
   private readonly engine = new TemplateEngine();
@@ -74,8 +76,13 @@ export class DocumentationBuilder {
   }
 
   private async loadTemplate(path: string): Promise<string | null> {
+    const cached = templateCache.get(path);
+    if (cached) return cached;
+
     try {
-      return await readFile(path, "utf-8");
+      const content = await readFile(path, "utf-8");
+      templateCache.set(path, content);
+      return content;
     } catch {
       return null;
     }

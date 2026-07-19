@@ -47,7 +47,7 @@ export function SectionSelector({ selected, onChange, disabled }: SectionSelecto
             key={section.id}
             onClick={() => toggle(section.id)}
             disabled={disabled}
-            className={`w-full flex items-start gap-3 p-3 rounded-lg border text-left transition-colors ${
+            className={`w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-colors ${
               isActive
                 ? "border-blue-400/40 bg-blue-500/10"
                 : "border-white/10 bg-white/5 hover:border-white/20"
@@ -60,7 +60,7 @@ export function SectionSelector({ selected, onChange, disabled }: SectionSelecto
             )}
             <div>
               <p
-                className={`text-sm font-medium ${isActive ? "text-blue-300" : "text-white/80"}`}
+                className={`text-sm font-medium ${isActive ? "text-blue-300" : "text-white/70"}`}
               >
                 {section.label}
               </p>

@@ -10,16 +10,16 @@ export function AnalysisTab({
   loading: boolean;
 }) {
   const architectureEvidence = (confidence: number) => {
-    if (confidence >= 0.85) return "Evidencia muy sólida";
-    if (confidence >= 0.7) return "Evidencia sólida";
+    if (confidence >= 0.85) return "Evidencia muy solida";
+    if (confidence >= 0.7) return "Evidencia solida";
     if (confidence >= 0.55) return "Evidencia moderada";
     return "Evidencia inicial";
   };
   if (loading) return <SkeletonSpinner />;
   if (!analysis) {
     return (
-      <div className="text-center py-16 text-white/30">
-        <div className="w-12 h-12 mx-auto mb-3 opacity-50">
+      <div className="text-center py-16 text-white/50">
+        <div className="w-12 h-12 mx-auto mb-3 opacity-60">
           <ChevronRight />
         </div>
         <p className="text-sm">No hay datos de analisis</p>
@@ -30,18 +30,18 @@ export function AnalysisTab({
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wide mb-3">
+        <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-3">
           Lenguajes
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {analysis.languages.map((lang) => (
             <div
               key={lang.name}
-              className="p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-colors"
+              className="p-4 bg-slate-900/85 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl shadow-black/40 hover:border-white/20 transition-colors"
             >
-              <p className="text-xs text-white/60 mb-1">{lang.name}</p>
+              <p className="text-xs text-white/50 mb-1">{lang.name}</p>
               <p className="text-2xl font-bold text-white">{lang.files}</p>
-              <p className="text-xs text-white/40">
+              <p className="text-xs text-white/50">
                 archivos &middot; {lang.percentage.toFixed(1)}%
               </p>
             </div>
@@ -51,14 +51,14 @@ export function AnalysisTab({
 
       {analysis.frameworks.length > 0 && (
         <div>
-          <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wide mb-3">
+          <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-3">
             Frameworks
           </h3>
           <div className="flex flex-wrap gap-2">
             {analysis.frameworks.map((fw) => (
               <div
                 key={fw.name}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-900/85 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl shadow-black/40"
               >
                 <span className="text-sm font-medium text-white">
                   {fw.name}
@@ -73,10 +73,10 @@ export function AnalysisTab({
       )}
 
       <div>
-        <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wide mb-3">
+        <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-3">
           Arquitectura
         </h3>
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 p-5">
+        <div className="bg-slate-900/85 backdrop-blur-2xl rounded-2xl border border-white/10 p-6 shadow-2xl shadow-black/40">
           <div className="grid grid-cols-2 gap-6 mb-4">
             <div>
               <p className="text-xs text-white/50 mb-1">Patron</p>
@@ -99,7 +99,7 @@ export function AnalysisTab({
                   {(analysis.architecture.confidence * 100).toFixed(0)}%
                 </span>
               </div>
-              <p className="text-[11px] text-white/45 mt-1.5">
+              <p className="text-[11px] text-white/50 mt-1.5">
                 {architectureEvidence(analysis.architecture.confidence)}: basada en {analysis.architecture.indicators.length} indicadores estructurales.
               </p>
             </div>
@@ -111,7 +111,7 @@ export function AnalysisTab({
                 {analysis.architecture.indicators.map((ind) => (
                   <span
                     key={ind}
-                    className="px-2.5 py-1 bg-white/5 text-white/70 text-xs rounded-md border border-white/10"
+                    className="px-2.5 py-1 bg-white/5 text-white/70 text-xs rounded-lg border border-white/10"
                   >
                     {ind}
                   </span>
@@ -124,20 +124,20 @@ export function AnalysisTab({
 
       {analysis.dependencies.length > 0 && (
         <div>
-          <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wide mb-3">
+          <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-3">
             Dependencias ({analysis.dependencies.length})
           </h3>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
+          <div className="bg-slate-900/85 backdrop-blur-2xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl shadow-black/40">
             <table className="w-full text-sm">
-              <thead className="bg-white/10">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-white/70 uppercase">
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-white/60 uppercase">
                     Paquete
                   </th>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-white/70 uppercase">
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-white/60 uppercase">
                     Version
                   </th>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-white/70 uppercase">
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-white/60 uppercase">
                     Tipo
                   </th>
                 </tr>
@@ -146,7 +146,7 @@ export function AnalysisTab({
                 {analysis.dependencies.slice(0, 20).map((dep) => (
                   <tr
                     key={dep.name}
-                    className="border-b border-white/5 last:border-0"
+                    className="border-b border-white/10 last:border-0"
                   >
                     <td className="px-4 py-2 font-medium text-white">
                       {dep.name}
@@ -166,7 +166,7 @@ export function AnalysisTab({
               </tbody>
             </table>
             {analysis.dependencies.length > 20 && (
-              <p className="text-xs text-white/30 text-center py-2 border-t border-white/5">
+              <p className="text-xs text-white/40 text-center py-2 border-t border-white/10">
                 + {analysis.dependencies.length - 20} mas
               </p>
             )}
