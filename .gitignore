@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.out/
+*.tsbuildinfo
+
+# Vite
+.vite/
+
+# Testing / Coverage
+coverage/
+
+# IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads & Temp
+uploads/
+temp/
+tmp/
+
+# Generated files
+*.pdf
+*.zip
+
+# Puppeteer cache
+.cache/
+.local-chromium/
+
+# MongoDB local data
+data/
+mongodb/
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# React (Vite) build
+dist-ssr/
+*.local
+
+# Logs from services
+server.log
